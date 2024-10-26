@@ -17,6 +17,7 @@ authroute.notFound((c) => {
 })
 authroute.post('/login', loginAuth)
 authroute.post('/resetpassword', resetPassword)
+authroute.post('/resetpassotp', requestOtp)
 authroute.post('/requestotp', requestOtp)
 authroute.post('/signup', signupAuth)
 authroute.post('/verifyemail', verifyEmail)

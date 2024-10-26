@@ -16,14 +16,14 @@ const otpVaildator = z.object({
 export async function resetPassword(c: Context) {
     try {
         const obj = otpVaildator.parse(await c.req.parseBody())
-        const otp = await redis.get('otp-' + obj.email)
+        const otp = await redis.get('resetpassword-otp-' + obj.email)
         if (otp === obj.code) {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(obj.password, salt);
             await db.update(UsersTable)
                 .set({ password: hash })
                 .where(eq(UsersTable.email, obj.email));
-            await redis.del('otp-' + obj.email)
+            await redis.del('resetpassword-otp-' + obj.email)
             return c.json({ message: "sucessfully updated" })
         } else {
             return c.json({ message: "invalid otp" }, 400)
