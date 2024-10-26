@@ -8,17 +8,11 @@ import authroute from './Routes/routes.js';
 export const config = {
     runtime: 'edge'
 }
-const app = new Hono()
+const app = new Hono().basePath('/api')
 app.route('/user', user)
 app.route('/auth', authroute)
 app.notFound((c) => {
-    return c.json(
-        {
-            text: "new url",
-            message: c.req
-        },
-        404
-    )
+    return c.text("404 Page Not Found")
 })
 
 const port: any = process.env.PORT

@@ -10,7 +10,6 @@ export async function sendEmail({ email, code, device }: Props) {
     try {
         const host: any = process.env.EMAIL_HOST
         const port: any = process.env.EMAIL_PORT
-
         const transport = nodemailer.createTransport({
             host: host,
             port: port,

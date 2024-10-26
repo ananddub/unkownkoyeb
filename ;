@@ -1,6 +1,14 @@
 import type { Context } from "hono"
 import { verifyToken } from "../util/jwt/jwt.js"
 
+export function authenticationMiddleware(token: string, c: Context) {
+
+    if (token === '') {
+
+    }
+    return false
+}
+
 export async function testAuthMiddleware(c: Context, next: any) {
     try {
         const regex = /(?<=^Bearer[\s*])[^\s]*$/
@@ -12,16 +20,17 @@ export async function testAuthMiddleware(c: Context, next: any) {
                 const verifytoken = await verifyToken(token)
                 const regex = /(?<=^\/api\/)\w*/gm
                 if (verifytoken) {
-                    const value: any = c.req.routePath.match(regex)
-                    if (value?.length > 0 && value[0] === verifytoken.role) {
+                    if (regex.test(c.req.url())) {
                         return next()
                     }
                 }
+                return c.json({ "error": { "message": "authentication required" } }, 401)
             } catch (e) {
-                console.log(e)
+
+                return c.json({ "error": { "message": "authentication required" } }, 401)
             }
-            return c.json({ "error": { "message": "authentication required" } }, 401)
         }
+
         return c.json({ "error": { "message": "authentication required" } }, 401)
     } catch (e) {
         return c.json({

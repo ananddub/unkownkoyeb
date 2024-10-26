@@ -1,9 +1,10 @@
 import * as jwt from 'hono/jwt'
 import moment from 'moment'
+import { db } from '../../model/connection.js'
+import { UsersTable } from '../../../drizzle/schema.js'
+import { eq } from "drizzle-orm";
 interface Props {
-
     user: string,
-    role: string,
     exp?: any,
     createdAt?: any
 }
@@ -67,11 +68,13 @@ export async function genrateAccessToken(token: string) {
 
 export async function verifyToken(token: string) {
     try {
-        const accesstoken = await jwt.verify(token, process.env.REFRESH_TOKEN ?? 'test')
+        const accesstoken: any = await jwt.verify(token, process.env.REFRESH_TOKEN ?? 'test')
         const exp = accesstoken.exp ?? 0
         if (exp === 0) return false;
         else if (Date.now() > exp) return false
-        return true
+        const user = await db.select().from(UsersTable).where(eq(UsersTable.email, accesstoken.user))
+        if (user.length === 0) return false
+        return user[0]
     } catch (e) {
         return false
     }

@@ -12,10 +12,10 @@ export const UsersTable = pgTable(
     'users',
     {
         id: serial('id').primaryKey(),
-        name: text('name').notNull().unique(),
+        image: text('image'),
+        username: text('name').notNull().unique(),
         password: text('password').notNull(),
         email: text('email').notNull().unique(),
-        image: text('image'),
         role: text('role').default('user').notNull(),
         isVerifed: boolean('isVerifed').default(false),
         createdAt: timestamp('createdAt').defaultNow().notNull(),
