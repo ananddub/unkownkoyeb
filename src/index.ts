@@ -1,11 +1,24 @@
+import { Hono } from 'hono';
 import { serve } from '@hono/node-server'
 import 'dotenv/config'
-import { Hono } from 'hono'
+import { user } from './Routes/user.js';
+import authroute from './Routes/routes.js';
 
+
+export const config = {
+    runtime: 'edge'
+}
 const app = new Hono()
-
-app.get('/', (c) => {
-    return c.text('Hello Hono!')
+app.route('/user', user)
+app.route('/auth', authroute)
+app.notFound((c) => {
+    return c.json(
+        {
+            text: "new url",
+            message: c.req
+        },
+        404
+    )
 })
 
 const port: any = process.env.PORT
