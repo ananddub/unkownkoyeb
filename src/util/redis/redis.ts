@@ -6,7 +6,6 @@ const port = process.env.REDIS_PORT || '';
 
 
 const redis = new Redis("rediss://default:AU89AAIjcDFhN2ZjMDhjYTY3ODY0MzZlYjRkNjEyZDAxOTg4NTY4Y3AxMA@curious-ox-20285.upstash.io:6379");
-await redis.set('foo', 'bar');
 //
 // redis.on('error', (err) => {
 //     console.error('Redis connection error:', err);
