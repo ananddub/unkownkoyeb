@@ -22,7 +22,7 @@ export async function requestOtp(c: Context) {
             }
             const device = c.req.header()['user-agent']
             const otp = generateNumericOTP()
-            const emailKey = 'otp-' + obj.email
+            const emailKey = 'resetpassword-otp-' + obj.email
             const countKey = 'otp-count-' + obj.email
             const requestCount = parseInt(await redis.get(countKey)) || 0
             if (requestCount >= 5) {
@@ -34,7 +34,7 @@ export async function requestOtp(c: Context) {
             await redis.multi()
                 .incr(countKey)
                 .expire(countKey, 60 * 30)
-                .setex(emailKey, 60 * 15, `${otp}`)
+                .setex(emailKey, 60 * 5, `${otp}`)
                 .exec()
 
             sendEmail({ email: obj.email, code: otp, device })

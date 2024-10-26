@@ -32,7 +32,7 @@ export async function signupAuth(c: Context) {
             }])
             const device = c.req.header()['user-agent']
             const otp = generateNumericOTP()
-            await redis.setex('otp-' + obj.email, 60 * 15, `${otp}`)
+            await redis.setex('otp-' + obj.email, 60 * 5, `${otp}`)
             sendEmail({ email: obj.email, code: otp, device })
             return c.json({ message: "signup sucessfull" }, 200)
         } catch (e: any) {

@@ -35,7 +35,7 @@ export async function requestResetOtp(c: Context) {
             await redis.multi()
                 .incr(countKey)
                 .expire(countKey, 60 * 30)
-                .setex(emailKey, 60 * 15, `${otp}`)
+                .setex(emailKey, 60 * 5, `${otp}`)
                 .exec()
 
             sendEmail({ email: obj.email, code: otp, device })

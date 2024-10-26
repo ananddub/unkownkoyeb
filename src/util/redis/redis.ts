@@ -5,7 +5,8 @@ const password = process.env.REDIS_PASS || '';
 const port = process.env.REDIS_PORT || '';
 
 
-const redis = new Redis("rediss://default:AU89AAIjcDFhN2ZjMDhjYTY3ODY0MzZlYjRkNjEyZDAxOTg4NTY4Y3AxMA@curious-ox-20285.upstash.io:6379");
+const REDIS_URL = process.env.REDIS_URL || ''
+const redis = new Redis(REDIS_URL);
 //
 // redis.on('error', (err) => {
 //     console.error('Redis connection error:', err);
