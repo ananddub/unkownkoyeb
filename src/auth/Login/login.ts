@@ -28,9 +28,11 @@ export async function loginAuth(c: Context) {
                 delete obj.createdAt
                 return c.json({ token, user: obj }, 200)
             }
-        } else {
-            return c.json({ message: "user not found" }, 404)
         }
+        return c.json(
+            { message: "user not found" }
+            , 404)
+
     } catch (e: any) {
         return c.json({
             message: e.message
