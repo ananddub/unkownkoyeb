@@ -25,14 +25,15 @@ export async function signupAuth(c: Context) {
         try {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(obj.password, salt);
-            await db.insert(UsersTable).values([{
+            await db().insert(UsersTable).values([{
                 username: obj.username,
                 email: obj.email,
                 password: hash,
             }])
             const device = c.req.header()['user-agent']
             const otp = generateNumericOTP()
-            await redis.setex('otp-' + obj.email, 60 * 5, `${otp}`)
+            const redisvalue = redis()
+            await redisvalue.setex('otp-' + obj.email, 60 * 5, `${otp}`)
             sendEmail({ email: obj.email, code: otp, device })
             return c.json({ message: "signup sucessfull" }, 200)
         } catch (e: any) {

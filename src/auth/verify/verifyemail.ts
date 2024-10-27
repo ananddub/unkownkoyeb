@@ -13,14 +13,15 @@ const otpVaildator = z.object({
 export default async function verifyEmail(c: Context) {
     try {
         const obj = otpVaildator.parse(await c.req.parseBody())
-        const otp = await redis.get('otp-' + obj.email)
+        const redisvalue = redis()
+        const otp = await redisvalue.get('otp-' + obj.email)
         if (otp === obj.code) {
-            await db.update(UsersTable)
+            await db().update(UsersTable)
                 .set({ isVerifed: true })
                 .where(eq(UsersTable.email, obj.email));
             try {
-                await redis.del('otp-count-' + obj.email)
-                await redis.del('otp-' + obj.email)
+                await redisvalue.del('otp-count-' + obj.email)
+                await redisvalue.del('otp-' + obj.email)
             } catch (e) {
 
             }

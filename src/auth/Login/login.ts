@@ -13,7 +13,7 @@ const bodyVaildator = z.object({
 export async function loginAuth(c: Context) {
     try {
         const obj = bodyVaildator.parse(await c.req.parseBody())
-        const user = await db.select().from(UsersTable).where(eq(UsersTable.email, obj.email))
+        const user = await db().select().from(UsersTable).where(eq(UsersTable.email, obj.email))
         if (user.length > 0) {
             const match = await bcrypt.compare(obj.password, user[0].password)
             if (match) {

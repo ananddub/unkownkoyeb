@@ -16,7 +16,8 @@ export async function requestOtp(c: Context) {
     try {
         const obj: any = bodyVaildator.parse(await c.req.parseBody())
         try {
-            const user = await db.select().from(UsersTable).where(eq(UsersTable.email, obj.email))
+            const redisvalue = redis()
+            const user = await db().select().from(UsersTable).where(eq(UsersTable.email, obj.email))
             if (user.length == 0) {
                 return c.json({ message: "user not found" }, 404)
             }
@@ -24,14 +25,14 @@ export async function requestOtp(c: Context) {
             const otp = generateNumericOTP()
             const emailKey = 'resetpassword-otp-' + obj.email
             const countKey = 'otp-count-' + obj.email
-            const requestCount = parseInt(await redis.get(countKey)) || 0
+            const requestCount = parseInt(await redisvalue.get(countKey)) || 0
             if (requestCount >= 5) {
                 return c.json(
                     { message: "Too many requests. Please wait 30 minutes before trying again." }
                     , 429)
             }
 
-            await redis.multi()
+            await redisvalue.multi()
                 .incr(countKey)
                 .expire(countKey, 60 * 30)
                 .setex(emailKey, 60 * 5, `${otp}`)
